@@ -1,0 +1,14 @@
+- name: update cache install apache2 and update pacages to latest version
+  hosts: all
+  tasks:
+    - name: Update repository cache and install apache2
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: Update packages to their latest version 
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+        

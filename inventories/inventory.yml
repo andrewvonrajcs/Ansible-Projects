@@ -1,0 +1,16 @@
+all:
+  children:
+    pi: 
+      hosts:
+        raspi.local:
+          ansible_connection: ssh
+          ansible_user: pi
+
+    ubuntu:
+      hosts:
+        Ubuntu1:
+          ansible_connection: ssh
+          ansible_user: family
+         
+
+
