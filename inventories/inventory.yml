@@ -11,6 +11,12 @@ all:
         Ubuntu1:
           ansible_connection: ssh
           ansible_user: family
+
+    fedora:
+      hosts:
+        fedpi:
+          ansible_connection: ssh
+          ansible_user: family
          
 
 

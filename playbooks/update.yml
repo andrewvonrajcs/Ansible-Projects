@@ -1,14 +1,17 @@
-- name: update cache install apache2 and update pacages to latest version
+- name:  Install needed packages and update packages to latest version
   hosts: all
   tasks:
-    - name: Update repository cache and install apache2
-      ansible.builtin.apt:
-        name: apache2
+    - name: install/check if installed NetworkManager,firewalld,vim
+      ansible.builtin.package:
+        name: 
+          - NetworkManager
+          - firewalld
+          - vim
+          - systemd
         state: present
-        update_cache: yes
 
     - name: Update packages to their latest version 
-      ansible.builtin.apt:
+      ansible.builtin.package:
         name: "*"
         state: latest
         

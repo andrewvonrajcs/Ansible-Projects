@@ -1,0 +1,22 @@
+- name: config for NFS clients
+  hosts: all
+  tasks:
+    - name: install nfs client packages
+      ansible.builtin.package:
+        name: 
+          - nfs-common
+          - nfs-utils
+        state: present
+    - name: create mount point for NFS share
+      ansible.builtin.file:
+        path: /mnt/nfs_local
+        state: directory
+        mode: '0755'
+    - name: mount NFS share
+      ansible.posix.mount:
+        src: raspi.local:/mnt/nfs_share
+        path: /mnt/nfs_local
+        fstype: nfs
+        opts: rw
+        state: mounted
+

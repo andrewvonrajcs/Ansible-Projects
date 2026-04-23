@@ -1,0 +1,27 @@
+- name: Config for NFS server 
+  hosts: pi
+  tasks:
+    - name: install nfs server
+      ansible.builtin.package:
+        name: 
+          - nfs-kernel-server
+          - nfs-utils
+        state: present
+    - name: create directory for NFS share
+      ansible.builtin.file:
+        path: /mnt/nfs_share
+        state: directory
+        mode: '0755'
+
+    - name: add exports to /etc/exports
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: '/mnt/nfs_share 10.0.0.0/24(rw,sync,no_subtree_check)'
+
+    - name: restart nfs server and enable it to start on boot
+      ansible.builtin.service:
+        name: 
+          -nfs-kernel-server
+          -nfs-utils
+        state: restarted
+        enabled: yes
