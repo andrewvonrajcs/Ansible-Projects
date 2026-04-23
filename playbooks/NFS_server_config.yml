@@ -6,19 +6,29 @@
         name: 
           - nfs-kernel-server #(if using Debian/Ubuntu)
           #- nfs-utils (if using RHEL/CentOS)
+          - firewalld
         state: present
         #(working on using facts to determine which package to install based on the OS)
+    - name: start and enable firewalld
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true
+    - name: allow NFS through firewall
+      ansible.posix.firewalld:
+        service: nfs
+        permanent: true
+        state: enabled
+        immediate: yes
     - name: create directory for NFS share
       ansible.builtin.file:
         path: /mnt/nfs_share
         state: directory
         mode: '0755'
-
     - name: add exports to /etc/exports
       ansible.builtin.lineinfile:
         path: /etc/exports
         line: '/mnt/nfs_share 10.0.0.0/24(rw,sync,no_subtree_check)'
-
     - name: restart nfs server and enable it to start on boot
       ansible.builtin.service:
         name: nfs-kernel-server

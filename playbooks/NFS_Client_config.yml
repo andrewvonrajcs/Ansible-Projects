@@ -6,8 +6,20 @@
         name: 
           #- nfs-common (if using Debian/Ubuntu)
           - nfs-utils #(if using RHEL/CentOS) 
+          - firewalld
         state: present
         #(working on using facts to determine which package to install based on the OS)
+    - name: start and enable firewalld
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true
+    - name: allow NFS through firewall
+      ansible.posix.firewalld:
+        service: nfs
+        permanent: true
+        state: enabled
+        immediate: yes
     - name: create mount point for NFS share
       ansible.builtin.file:
         path: /mnt/nfs_local
@@ -18,6 +30,7 @@
         src: raspi.local:/mnt/nfs_share
         path: /mnt/nfs_local
         fstype: nfs
-        opts: rw,sync,vers=3
+        opts: vers=3
         state: mounted
+      become: true
 
