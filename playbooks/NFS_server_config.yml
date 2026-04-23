@@ -4,9 +4,10 @@
     - name: install nfs server
       ansible.builtin.package:
         name: 
-          - nfs-kernel-server
-          - nfs-utils
+          - nfs-kernel-server #(if using Debian/Ubuntu)
+          #- nfs-utils (if using RHEL/CentOS)
         state: present
+        #(working on using facts to determine which package to install based on the OS)
     - name: create directory for NFS share
       ansible.builtin.file:
         path: /mnt/nfs_share
@@ -20,8 +21,6 @@
 
     - name: restart nfs server and enable it to start on boot
       ansible.builtin.service:
-        name: 
-          -nfs-kernel-server
-          -nfs-utils
+        name: nfs-kernel-server
         state: restarted
         enabled: yes
