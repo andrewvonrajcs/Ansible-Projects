@@ -30,7 +30,6 @@
         src: raspi.local:/mnt/nfs_share
         path: /mnt/nfs_local
         fstype: nfs
-        opts: vers=3
         state: mounted
       become: true
 

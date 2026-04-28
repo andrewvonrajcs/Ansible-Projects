@@ -20,15 +20,15 @@
         permanent: true
         state: enabled
         immediate: yes
-    - name: create directory for NFS share
+    - name: create directory for NFS share with appropriate permissions
       ansible.builtin.file:
         path: /mnt/nfs_share
         state: directory
-        mode: '0755'
+        mode: '1777'
     - name: add exports to /etc/exports
       ansible.builtin.lineinfile:
         path: /etc/exports
-        line: '/mnt/nfs_share 10.0.0.0/24(rw,sync,no_subtree_check)'
+        line: '/mnt/nfs_share 10.0.0.0/24(rw,sync,no_subtree_check,root_squash)'
     - name: restart nfs server and enable it to start on boot
       ansible.builtin.service:
         name: nfs-kernel-server
