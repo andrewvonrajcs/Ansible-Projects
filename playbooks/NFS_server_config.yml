@@ -35,8 +35,15 @@
       ansible.builtin.lineinfile:
         path: /etc/exports
         line: '/mnt/nfs_share 10.0.0.0/24(rw,sync,no_subtree_check,root_squash)'
-    - name: restart nfs server and enable it to start on boot
+    - name: restart nfs server and enable it to start on boot for Debian/Ubuntu
       ansible.builtin.service:
         name: nfs-kernel-server
         state: restarted
         enabled: yes
+      when: ansible_facts["os_family"] == "Debian"
+    - name: restart nfs server and enable it to start on boot for RHEL/CentOS
+      ansible.builtin.service:
+        name: nfs-server
+        state: restarted
+        enabled: yes
+      when: ansible_facts["os_family"] == "RedHat"
