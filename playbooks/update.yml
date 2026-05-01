@@ -1,14 +1,26 @@
 - name:  Install needed packages and update packages to latest version
   hosts: all
   tasks:
-    - name: install/check if installed NetworkManager,firewalld,vim
+    - name: install installed NetworkManager, firewalld, vim, and systemd and lvm2 for RHEL/CentOS
       ansible.builtin.package:
         name: 
           - NetworkManager
           - firewalld
           - vim
           - systemd
+          - lvm2
         state: present
+      when: ansible_facts["os_family"] == "RedHat"
+    - name: install installed NetworkManager, firewalld, vim, and systemd, and lvm2 for Debian/Ubuntu
+      ansible.builtin.package:
+        name: 
+          - network-manager
+          - firewalld
+          - vim
+          - systemd
+          - lvm2
+        state: present
+      when: ansible_facts["os_family"] == "Debian"
 
     - name: Update packages to their latest version 
       ansible.builtin.package:
