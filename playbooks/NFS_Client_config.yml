@@ -1,14 +1,21 @@
 - name: config for NFS clients
   hosts: all
   tasks:
-    - name: install nfs client packages
+    - name: install nfs client for Debian/Ubuntu
       ansible.builtin.package:
-        name: 
-          #- nfs-common (if using Debian/Ubuntu)
-          - nfs-utils #(if using RHEL/CentOS) 
-          - firewalld
+        name: nfs-common #if using Debian/Ubuntu
         state: present
-        #(working on using facts to determine which package to install based on the OS)
+      when: ansible_facts["os_family"] == "Debian"
+    - name: install nfs client for RHEL/CentOS
+      ansible.builtin.package:
+        name: nfs-utils #if using RHEL/CentOS
+        state: present
+      when: ansible_facts["os_family"] == "RedHat"
+    - name: install firewalld
+      ansible.builtin.package:
+        name: firewalld
+        state: present
+      become: true
     - name: start and enable firewalld
       ansible.builtin.service:
         name: firewalld
@@ -27,7 +34,8 @@
         mode: '0755'
     - name: mount NFS share
       ansible.posix.mount:
-        src: raspi.local:/mnt/nfs_share
+        src: raspi.local:/mnt/nfs_share 
+        #still working on using facts or variables to replace raspi.local with the actual IP address or hostname of the NFS server after running (NFS_server_config.yml)
         path: /mnt/nfs_local
         fstype: nfs
         state: mounted

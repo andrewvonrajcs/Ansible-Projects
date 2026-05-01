@@ -1,14 +1,20 @@
 - name: Config for NFS server 
-  hosts: pi
+  hosts: pi #(can use any host or group of hosts)
   tasks:
-    - name: install nfs server
+    - name: install nfs server for Debian/Ubuntu
       ansible.builtin.package:
-        name: 
-          - nfs-kernel-server #(if using Debian/Ubuntu)
-          #- nfs-utils (if using RHEL/CentOS)
-          - firewalld
+        name: nfs-kernel-server #(if using Debian/Ubuntu)
         state: present
-        #(working on using facts to determine which package to install based on the OS)
+      when: ansible_facts["os_family"] == "Debian"
+    - name: install nfs server for RHEL/CentOS
+      ansible.builtin.package:
+        name: nfs-utils #(if using RHEL/CentOS)
+        state: present
+      when: ansible_facts["os_family"] == "RedHat"
+    - name: install firewalld
+      ansible.builtin.package:
+        name: firewalld
+        state: present
     - name: start and enable firewalld
       ansible.builtin.service:
         name: firewalld
